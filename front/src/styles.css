@@ -6,6 +6,10 @@
 html{scroll-behavior:smooth}
 body{margin:0;min-width:320px;background:#f4f7f9}
 button,input,select,textarea{font:inherit}
+input,select,textarea,.input,.select,.textarea{background-color:#ffffff !important;color:#0f172a !important;border-color:#cbd5e1}
+input::placeholder,textarea::placeholder,.input::placeholder,.textarea::placeholder{color:#94a3b8 !important}
+input:focus,select:focus,textarea:focus,.input:focus,.select:focus,.textarea:focus{background-color:#ffffff !important;color:#0f172a !important;border-color:#087f70 !important}
+input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus,input:-webkit-autofill:active{-webkit-box-shadow:0 0 0 1000px #ffffff inset !important;-webkit-text-fill-color:#0f172a !important}
 a,button,.surface,.dashboard-nav-link,.data-table tbody tr{transition:color .18s ease,background-color .18s ease,border-color .18s ease,box-shadow .18s ease,transform .18s ease}
 a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid rgba(8,127,112,.22);outline-offset:2px}
 .btn-primary{background:#087f70;border-color:#087f70;color:#fff}
