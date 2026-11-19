@@ -1,0 +1,34 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1794685956482,
+      "tag": "0000_curved_wallop",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1794685956483,
+      "tag": "0001_financial_integrity",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794689253778,
+      "tag": "0002_yummy_blob",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1794690997747,
+      "tag": "0003_bitter_prowler",
+      "breakpoints": true
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+import {useState} from "react";import {Fuel} from "lucide-react";
+export default function Logo({light=false}){const [failed,setFailed]=useState(false);return <div className="flex items-center gap-3">{failed?<span className="grid h-10 w-10 place-items-center rounded-xl bg-[#087f70] text-white"><Fuel/></span>:<img src="/images/logo.png" alt="شعار وين الوقود؟" className="h-10 w-10 rounded-xl object-contain" onError={()=>setFailed(true)}/>}<b className={light?"text-white":"text-[#101d2d]"}>وين الوقود؟</b></div>}

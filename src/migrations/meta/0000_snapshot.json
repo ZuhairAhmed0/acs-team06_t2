@@ -1,0 +1,1746 @@
+{
+  "id": "362f6003-6f74-4778-8bb7-d3206fe77727",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.bank_accounts": {
+      "name": "bank_accounts",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "bank_name": {
+          "name": "bank_name",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "account_number": {
+          "name": "account_number",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "account_holder_name": {
+          "name": "account_holder_name",
+          "type": "varchar(150)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "station_id": {
+          "name": "station_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "is_primary": {
+          "name": "is_primary",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "is_active": {
+          "name": "is_active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "bank_accounts_primary_user_unique": {
+          "name": "bank_accounts_primary_user_unique",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "\"bank_accounts\".\"user_id\" IS NOT NULL AND \"bank_accounts\".\"is_primary\" = true AND \"bank_accounts\".\"is_active\" = true",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "bank_accounts_primary_station_unique": {
+          "name": "bank_accounts_primary_station_unique",
+          "columns": [
+            {
+              "expression": "station_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "\"bank_accounts\".\"station_id\" IS NOT NULL AND \"bank_accounts\".\"is_primary\" = true AND \"bank_accounts\".\"is_active\" = true",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "bank_accounts_user_id_idx": {
+          "name": "bank_accounts_user_id_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "bank_accounts_station_id_idx": {
+          "name": "bank_accounts_station_id_idx",
+          "columns": [
+            {
+              "expression": "station_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "bank_accounts_user_id_users_id_fk": {
+          "name": "bank_accounts_user_id_users_id_fk",
+          "tableFrom": "bank_accounts",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "bank_accounts_station_id_stations_id_fk": {
+          "name": "bank_accounts_station_id_stations_id_fk",
+          "tableFrom": "bank_accounts",
+          "tableTo": "stations",
+          "columnsFrom": [
+            "station_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "bank_accounts_exactly_one_owner": {
+          "name": "bank_accounts_exactly_one_owner",
+          "value": "(\"bank_accounts\".\"user_id\" IS NOT NULL AND \"bank_accounts\".\"station_id\" IS NULL) OR (\"bank_accounts\".\"user_id\" IS NULL AND \"bank_accounts\".\"station_id\" IS NOT NULL)"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.financial_accounts": {
+      "name": "financial_accounts",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "account_type": {
+          "name": "account_type",
+          "type": "financial_account_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "station_id": {
+          "name": "station_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "financial_accounts_platform_cash_unique": {
+          "name": "financial_accounts_platform_cash_unique",
+          "columns": [
+            {
+              "expression": "account_type",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "\"financial_accounts\".\"account_type\" = 'PLATFORM_CASH'",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "financial_accounts_user_available_unique": {
+          "name": "financial_accounts_user_available_unique",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "\"financial_accounts\".\"account_type\" = 'USER_AVAILABLE'",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "financial_accounts_user_station_allocated_unique": {
+          "name": "financial_accounts_user_station_allocated_unique",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "station_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "\"financial_accounts\".\"account_type\" = 'USER_ALLOCATED'",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "financial_accounts_station_payable_unique": {
+          "name": "financial_accounts_station_payable_unique",
+          "columns": [
+            {
+              "expression": "station_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "\"financial_accounts\".\"account_type\" = 'STATION_PAYABLE'",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "financial_accounts_user_id_users_id_fk": {
+          "name": "financial_accounts_user_id_users_id_fk",
+          "tableFrom": "financial_accounts",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "financial_accounts_station_id_stations_id_fk": {
+          "name": "financial_accounts_station_id_stations_id_fk",
+          "tableFrom": "financial_accounts",
+          "tableTo": "stations",
+          "columnsFrom": [
+            "station_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "financial_accounts_ownership_valid": {
+          "name": "financial_accounts_ownership_valid",
+          "value": "\n        (\"financial_accounts\".\"account_type\" = 'PLATFORM_CASH' AND \"financial_accounts\".\"user_id\" IS NULL AND \"financial_accounts\".\"station_id\" IS NULL)\n        OR (\"financial_accounts\".\"account_type\" = 'USER_AVAILABLE' AND \"financial_accounts\".\"user_id\" IS NOT NULL AND \"financial_accounts\".\"station_id\" IS NULL)\n        OR (\"financial_accounts\".\"account_type\" = 'USER_ALLOCATED' AND \"financial_accounts\".\"user_id\" IS NOT NULL AND \"financial_accounts\".\"station_id\" IS NOT NULL)\n        OR (\"financial_accounts\".\"account_type\" = 'STATION_PAYABLE' AND \"financial_accounts\".\"user_id\" IS NULL AND \"financial_accounts\".\"station_id\" IS NOT NULL)\n      "
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.financial_entries": {
+      "name": "financial_entries",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "transaction_id": {
+          "name": "transaction_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "financial_account_id": {
+          "name": "financial_account_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "entry_type": {
+          "name": "entry_type",
+          "type": "financial_entry_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "amount": {
+          "name": "amount",
+          "type": "numeric(18, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "financial_entries_transaction_id_idx": {
+          "name": "financial_entries_transaction_id_idx",
+          "columns": [
+            {
+              "expression": "transaction_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "financial_entries_financial_account_id_idx": {
+          "name": "financial_entries_financial_account_id_idx",
+          "columns": [
+            {
+              "expression": "financial_account_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "financial_entries_transaction_id_financial_transactions_id_fk": {
+          "name": "financial_entries_transaction_id_financial_transactions_id_fk",
+          "tableFrom": "financial_entries",
+          "tableTo": "financial_transactions",
+          "columnsFrom": [
+            "transaction_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "financial_entries_financial_account_id_financial_accounts_id_fk": {
+          "name": "financial_entries_financial_account_id_financial_accounts_id_fk",
+          "tableFrom": "financial_entries",
+          "tableTo": "financial_accounts",
+          "columnsFrom": [
+            "financial_account_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "financial_entries_amount_positive": {
+          "name": "financial_entries_amount_positive",
+          "value": "\"financial_entries\".\"amount\" > 0"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.financial_transaction_events": {
+      "name": "financial_transaction_events",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "transaction_id": {
+          "name": "transaction_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "event_type": {
+          "name": "event_type",
+          "type": "varchar(60)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "previous_status": {
+          "name": "previous_status",
+          "type": "financial_transaction_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "new_status": {
+          "name": "new_status",
+          "type": "financial_transaction_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "previous_execution_status": {
+          "name": "previous_execution_status",
+          "type": "execution_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "new_execution_status": {
+          "name": "new_execution_status",
+          "type": "execution_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "actor_user_id": {
+          "name": "actor_user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "idempotency_key": {
+          "name": "idempotency_key",
+          "type": "varchar(128)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "request_hash": {
+          "name": "request_hash",
+          "type": "char(64)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "metadata": {
+          "name": "metadata",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'::jsonb"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "financial_transaction_events_transaction_created_at_idx": {
+          "name": "financial_transaction_events_transaction_created_at_idx",
+          "columns": [
+            {
+              "expression": "transaction_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "financial_transaction_events_actor_created_at_idx": {
+          "name": "financial_transaction_events_actor_created_at_idx",
+          "columns": [
+            {
+              "expression": "actor_user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "financial_transaction_events_transaction_id_financial_transactions_id_fk": {
+          "name": "financial_transaction_events_transaction_id_financial_transactions_id_fk",
+          "tableFrom": "financial_transaction_events",
+          "tableTo": "financial_transactions",
+          "columnsFrom": [
+            "transaction_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "financial_transaction_events_actor_user_id_users_id_fk": {
+          "name": "financial_transaction_events_actor_user_id_users_id_fk",
+          "tableFrom": "financial_transaction_events",
+          "tableTo": "users",
+          "columnsFrom": [
+            "actor_user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.financial_transactions": {
+      "name": "financial_transactions",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "transaction_type": {
+          "name": "transaction_type",
+          "type": "financial_transaction_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "financial_transaction_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'PENDING'"
+        },
+        "execution_status": {
+          "name": "execution_status",
+          "type": "execution_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'NOT_REQUIRED'"
+        },
+        "requested_amount": {
+          "name": "requested_amount",
+          "type": "numeric(18, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "amount": {
+          "name": "amount",
+          "type": "numeric(18, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "station_id": {
+          "name": "station_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "source_station_id": {
+          "name": "source_station_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "destination_station_id": {
+          "name": "destination_station_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "bank_account_id": {
+          "name": "bank_account_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "submitted_bank_reference": {
+          "name": "submitted_bank_reference",
+          "type": "varchar(150)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "outgoing_bank_reference": {
+          "name": "outgoing_bank_reference",
+          "type": "varchar(150)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "reversal_of_transaction_id": {
+          "name": "reversal_of_transaction_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "idempotency_key": {
+          "name": "idempotency_key",
+          "type": "varchar(128)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "request_hash": {
+          "name": "request_hash",
+          "type": "char(64)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "hold_account_id": {
+          "name": "hold_account_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "hold_amount": {
+          "name": "hold_amount",
+          "type": "numeric(18, 2)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'0'"
+        },
+        "captured_amount": {
+          "name": "captured_amount",
+          "type": "numeric(18, 2)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'0'"
+        },
+        "released_amount": {
+          "name": "released_amount",
+          "type": "numeric(18, 2)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'0'"
+        },
+        "hold_expires_at": {
+          "name": "hold_expires_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "execution_started_at": {
+          "name": "execution_started_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "resolution_note": {
+          "name": "resolution_note",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_by_user_id": {
+          "name": "created_by_user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "processed_by_user_id": {
+          "name": "processed_by_user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "processed_at": {
+          "name": "processed_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "financial_transactions_creator_idempotency_key_unique": {
+          "name": "financial_transactions_creator_idempotency_key_unique",
+          "columns": [
+            {
+              "expression": "created_by_user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "idempotency_key",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "\"financial_transactions\".\"idempotency_key\" IS NOT NULL",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "financial_transactions_completed_reversal_unique": {
+          "name": "financial_transactions_completed_reversal_unique",
+          "columns": [
+            {
+              "expression": "reversal_of_transaction_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "\"financial_transactions\".\"transaction_type\" = 'REVERSAL' AND \"financial_transactions\".\"status\" = 'COMPLETED' AND \"financial_transactions\".\"reversal_of_transaction_id\" IS NOT NULL",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "financial_transactions_user_created_at_idx": {
+          "name": "financial_transactions_user_created_at_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "financial_transactions_station_created_at_idx": {
+          "name": "financial_transactions_station_created_at_idx",
+          "columns": [
+            {
+              "expression": "station_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "financial_transactions_type_status_idx": {
+          "name": "financial_transactions_type_status_idx",
+          "columns": [
+            {
+              "expression": "transaction_type",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "financial_transactions_execution_status_idx": {
+          "name": "financial_transactions_execution_status_idx",
+          "columns": [
+            {
+              "expression": "execution_status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "financial_transactions_hold_account_status_idx": {
+          "name": "financial_transactions_hold_account_status_idx",
+          "columns": [
+            {
+              "expression": "hold_account_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "financial_transactions_submitted_bank_reference_idx": {
+          "name": "financial_transactions_submitted_bank_reference_idx",
+          "columns": [
+            {
+              "expression": "submitted_bank_reference",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "financial_transactions_outgoing_bank_reference_idx": {
+          "name": "financial_transactions_outgoing_bank_reference_idx",
+          "columns": [
+            {
+              "expression": "outgoing_bank_reference",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "financial_transactions_reversal_of_idx": {
+          "name": "financial_transactions_reversal_of_idx",
+          "columns": [
+            {
+              "expression": "reversal_of_transaction_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "financial_transactions_user_id_users_id_fk": {
+          "name": "financial_transactions_user_id_users_id_fk",
+          "tableFrom": "financial_transactions",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "financial_transactions_station_id_stations_id_fk": {
+          "name": "financial_transactions_station_id_stations_id_fk",
+          "tableFrom": "financial_transactions",
+          "tableTo": "stations",
+          "columnsFrom": [
+            "station_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "financial_transactions_source_station_id_stations_id_fk": {
+          "name": "financial_transactions_source_station_id_stations_id_fk",
+          "tableFrom": "financial_transactions",
+          "tableTo": "stations",
+          "columnsFrom": [
+            "source_station_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "financial_transactions_destination_station_id_stations_id_fk": {
+          "name": "financial_transactions_destination_station_id_stations_id_fk",
+          "tableFrom": "financial_transactions",
+          "tableTo": "stations",
+          "columnsFrom": [
+            "destination_station_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "financial_transactions_bank_account_id_bank_accounts_id_fk": {
+          "name": "financial_transactions_bank_account_id_bank_accounts_id_fk",
+          "tableFrom": "financial_transactions",
+          "tableTo": "bank_accounts",
+          "columnsFrom": [
+            "bank_account_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "financial_transactions_reversal_of_transaction_id_financial_transactions_id_fk": {
+          "name": "financial_transactions_reversal_of_transaction_id_financial_transactions_id_fk",
+          "tableFrom": "financial_transactions",
+          "tableTo": "financial_transactions",
+          "columnsFrom": [
+            "reversal_of_transaction_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "financial_transactions_hold_account_id_financial_accounts_id_fk": {
+          "name": "financial_transactions_hold_account_id_financial_accounts_id_fk",
+          "tableFrom": "financial_transactions",
+          "tableTo": "financial_accounts",
+          "columnsFrom": [
+            "hold_account_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "financial_transactions_created_by_user_id_users_id_fk": {
+          "name": "financial_transactions_created_by_user_id_users_id_fk",
+          "tableFrom": "financial_transactions",
+          "tableTo": "users",
+          "columnsFrom": [
+            "created_by_user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "financial_transactions_processed_by_user_id_users_id_fk": {
+          "name": "financial_transactions_processed_by_user_id_users_id_fk",
+          "tableFrom": "financial_transactions",
+          "tableTo": "users",
+          "columnsFrom": [
+            "processed_by_user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "financial_transactions_requested_amount_positive": {
+          "name": "financial_transactions_requested_amount_positive",
+          "value": "\"financial_transactions\".\"requested_amount\" > 0"
+        },
+        "financial_transactions_amount_positive_when_present": {
+          "name": "financial_transactions_amount_positive_when_present",
+          "value": "\"financial_transactions\".\"amount\" IS NULL OR \"financial_transactions\".\"amount\" > 0"
+        },
+        "financial_transactions_hold_amounts_non_negative": {
+          "name": "financial_transactions_hold_amounts_non_negative",
+          "value": "\"financial_transactions\".\"hold_amount\" >= 0 AND \"financial_transactions\".\"captured_amount\" >= 0 AND \"financial_transactions\".\"released_amount\" >= 0"
+        },
+        "financial_transactions_hold_amounts_within_hold": {
+          "name": "financial_transactions_hold_amounts_within_hold",
+          "value": "\"financial_transactions\".\"captured_amount\" <= \"financial_transactions\".\"hold_amount\" AND \"financial_transactions\".\"captured_amount\" + \"financial_transactions\".\"released_amount\" <= \"financial_transactions\".\"hold_amount\""
+        },
+        "financial_transactions_hold_account_presence": {
+          "name": "financial_transactions_hold_account_presence",
+          "value": "(\"financial_transactions\".\"hold_amount\" = 0 AND \"financial_transactions\".\"hold_account_id\" IS NULL) OR (\"financial_transactions\".\"hold_amount\" > 0 AND \"financial_transactions\".\"hold_account_id\" IS NOT NULL)"
+        },
+        "financial_transactions_hold_backed_types": {
+          "name": "financial_transactions_hold_backed_types",
+          "value": "\n        (\"financial_transactions\".\"transaction_type\" IN ('FUEL_PURCHASE', 'WITHDRAWAL', 'SETTLEMENT')\n          AND \"financial_transactions\".\"hold_amount\" = \"financial_transactions\".\"requested_amount\"\n          AND \"financial_transactions\".\"hold_account_id\" IS NOT NULL)\n        OR (\"financial_transactions\".\"transaction_type\" NOT IN ('FUEL_PURCHASE', 'WITHDRAWAL', 'SETTLEMENT')\n          AND \"financial_transactions\".\"hold_amount\" = 0\n          AND \"financial_transactions\".\"hold_account_id\" IS NULL)\n      "
+        },
+        "financial_transactions_completed_amount_present": {
+          "name": "financial_transactions_completed_amount_present",
+          "value": "\"financial_transactions\".\"status\" <> 'COMPLETED' OR \"financial_transactions\".\"amount\" IS NOT NULL"
+        },
+        "financial_transactions_completed_holds_resolved": {
+          "name": "financial_transactions_completed_holds_resolved",
+          "value": "\"financial_transactions\".\"status\" <> 'COMPLETED' OR \"financial_transactions\".\"hold_amount\" = 0 OR \"financial_transactions\".\"captured_amount\" + \"financial_transactions\".\"released_amount\" = \"financial_transactions\".\"hold_amount\""
+        },
+        "financial_transactions_unsuccessful_holds_released": {
+          "name": "financial_transactions_unsuccessful_holds_released",
+          "value": "\"financial_transactions\".\"status\" NOT IN ('REJECTED', 'FAILED', 'CANCELLED') OR (\"financial_transactions\".\"captured_amount\" = 0 AND \"financial_transactions\".\"released_amount\" = \"financial_transactions\".\"hold_amount\")"
+        },
+        "financial_transactions_unknown_holds_retained": {
+          "name": "financial_transactions_unknown_holds_retained",
+          "value": "\"financial_transactions\".\"execution_status\" <> 'UNKNOWN' OR \"financial_transactions\".\"hold_amount\" = 0 OR (\"financial_transactions\".\"captured_amount\" = 0 AND \"financial_transactions\".\"released_amount\" = 0)"
+        },
+        "financial_transactions_actual_amount_within_request": {
+          "name": "financial_transactions_actual_amount_within_request",
+          "value": "\"financial_transactions\".\"transaction_type\" NOT IN ('FUEL_PURCHASE', 'WITHDRAWAL', 'SETTLEMENT') OR \"financial_transactions\".\"amount\" IS NULL OR \"financial_transactions\".\"amount\" <= \"financial_transactions\".\"requested_amount\""
+        },
+        "financial_transactions_completed_fuel_purchase_capture": {
+          "name": "financial_transactions_completed_fuel_purchase_capture",
+          "value": "\"financial_transactions\".\"transaction_type\" <> 'FUEL_PURCHASE' OR \"financial_transactions\".\"status\" <> 'COMPLETED' OR (\"financial_transactions\".\"amount\" <= \"financial_transactions\".\"requested_amount\" AND \"financial_transactions\".\"captured_amount\" = \"financial_transactions\".\"amount\" AND \"financial_transactions\".\"released_amount\" = \"financial_transactions\".\"hold_amount\" - \"financial_transactions\".\"amount\")"
+        },
+        "financial_transactions_completed_outgoing_full_capture": {
+          "name": "financial_transactions_completed_outgoing_full_capture",
+          "value": "\"financial_transactions\".\"transaction_type\" NOT IN ('WITHDRAWAL', 'SETTLEMENT') OR \"financial_transactions\".\"status\" <> 'COMPLETED' OR (\"financial_transactions\".\"amount\" = \"financial_transactions\".\"requested_amount\" AND \"financial_transactions\".\"captured_amount\" = \"financial_transactions\".\"requested_amount\" AND \"financial_transactions\".\"released_amount\" = 0)"
+        },
+        "financial_transactions_required_references": {
+          "name": "financial_transactions_required_references",
+          "value": "\n        (\"financial_transactions\".\"transaction_type\" = 'TOP_UP' AND \"financial_transactions\".\"user_id\" IS NOT NULL AND \"financial_transactions\".\"bank_account_id\" IS NOT NULL)\n        OR (\"financial_transactions\".\"transaction_type\" = 'WITHDRAWAL' AND \"financial_transactions\".\"user_id\" IS NOT NULL AND \"financial_transactions\".\"bank_account_id\" IS NOT NULL)\n        OR (\"financial_transactions\".\"transaction_type\" = 'ALLOCATION' AND \"financial_transactions\".\"user_id\" IS NOT NULL AND \"financial_transactions\".\"station_id\" IS NOT NULL)\n        OR (\"financial_transactions\".\"transaction_type\" = 'DEALLOCATION' AND \"financial_transactions\".\"user_id\" IS NOT NULL AND \"financial_transactions\".\"station_id\" IS NOT NULL)\n        OR (\"financial_transactions\".\"transaction_type\" = 'TRANSFER' AND \"financial_transactions\".\"user_id\" IS NOT NULL AND \"financial_transactions\".\"source_station_id\" IS NOT NULL AND \"financial_transactions\".\"destination_station_id\" IS NOT NULL AND \"financial_transactions\".\"source_station_id\" <> \"financial_transactions\".\"destination_station_id\")\n        OR (\"financial_transactions\".\"transaction_type\" = 'FUEL_PURCHASE' AND \"financial_transactions\".\"user_id\" IS NOT NULL AND \"financial_transactions\".\"station_id\" IS NOT NULL)\n        OR (\"financial_transactions\".\"transaction_type\" = 'SETTLEMENT' AND \"financial_transactions\".\"station_id\" IS NOT NULL AND \"financial_transactions\".\"bank_account_id\" IS NOT NULL)\n        OR (\"financial_transactions\".\"transaction_type\" = 'REVERSAL' AND \"financial_transactions\".\"reversal_of_transaction_id\" IS NOT NULL)\n      "
+        },
+        "financial_transactions_reversal_reference_only_for_reversals": {
+          "name": "financial_transactions_reversal_reference_only_for_reversals",
+          "value": "(\"financial_transactions\".\"transaction_type\" = 'REVERSAL' AND \"financial_transactions\".\"reversal_of_transaction_id\" IS NOT NULL) OR (\"financial_transactions\".\"transaction_type\" <> 'REVERSAL' AND \"financial_transactions\".\"reversal_of_transaction_id\" IS NULL)"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.fuel_purchases": {
+      "name": "fuel_purchases",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "financial_transaction_id": {
+          "name": "financial_transaction_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "fuel_type": {
+          "name": "fuel_type",
+          "type": "varchar(30)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "quantity": {
+          "name": "quantity",
+          "type": "numeric(12, 3)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "unit_price": {
+          "name": "unit_price",
+          "type": "numeric(18, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "attendant_id": {
+          "name": "attendant_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "fuel_purchases_financial_transaction_id_financial_transactions_id_fk": {
+          "name": "fuel_purchases_financial_transaction_id_financial_transactions_id_fk",
+          "tableFrom": "fuel_purchases",
+          "tableTo": "financial_transactions",
+          "columnsFrom": [
+            "financial_transaction_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "fuel_purchases_attendant_id_users_id_fk": {
+          "name": "fuel_purchases_attendant_id_users_id_fk",
+          "tableFrom": "fuel_purchases",
+          "tableTo": "users",
+          "columnsFrom": [
+            "attendant_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "fuel_purchases_financial_transaction_id_unique": {
+          "name": "fuel_purchases_financial_transaction_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "financial_transaction_id"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "fuel_purchases_quantity_positive": {
+          "name": "fuel_purchases_quantity_positive",
+          "value": "\"fuel_purchases\".\"quantity\" > 0"
+        },
+        "fuel_purchases_unit_price_positive": {
+          "name": "fuel_purchases_unit_price_positive",
+          "value": "\"fuel_purchases\".\"unit_price\" > 0"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.station_fuel_prices": {
+      "name": "station_fuel_prices",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "station_id": {
+          "name": "station_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "fuel_type": {
+          "name": "fuel_type",
+          "type": "varchar(30)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "price_per_liter": {
+          "name": "price_per_liter",
+          "type": "numeric(18, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "valid_from": {
+          "name": "valid_from",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "valid_until": {
+          "name": "valid_until",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "station_fuel_prices_station_fuel_valid_from_idx": {
+          "name": "station_fuel_prices_station_fuel_valid_from_idx",
+          "columns": [
+            {
+              "expression": "station_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "fuel_type",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "valid_from",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "station_fuel_prices_station_id_stations_id_fk": {
+          "name": "station_fuel_prices_station_id_stations_id_fk",
+          "tableFrom": "station_fuel_prices",
+          "tableTo": "stations",
+          "columnsFrom": [
+            "station_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "station_fuel_prices_price_positive": {
+          "name": "station_fuel_prices_price_positive",
+          "value": "\"station_fuel_prices\".\"price_per_liter\" > 0"
+        },
+        "station_fuel_prices_valid_range": {
+          "name": "station_fuel_prices_valid_range",
+          "value": "\"station_fuel_prices\".\"valid_until\" IS NULL OR \"station_fuel_prices\".\"valid_until\" > \"station_fuel_prices\".\"valid_from\""
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.station_members": {
+      "name": "station_members",
+      "schema": "",
+      "columns": {
+        "station_id": {
+          "name": "station_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "role": {
+          "name": "role",
+          "type": "station_member_role",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "station_member_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'ACTIVE'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "station_members_user_id_idx": {
+          "name": "station_members_user_id_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "station_members_station_status_idx": {
+          "name": "station_members_station_status_idx",
+          "columns": [
+            {
+              "expression": "station_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "station_members_station_id_stations_id_fk": {
+          "name": "station_members_station_id_stations_id_fk",
+          "tableFrom": "station_members",
+          "tableTo": "stations",
+          "columnsFrom": [
+            "station_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "station_members_user_id_users_id_fk": {
+          "name": "station_members_user_id_users_id_fk",
+          "tableFrom": "station_members",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "station_members_station_id_user_id_pk": {
+          "name": "station_members_station_id_user_id_pk",
+          "columns": [
+            "station_id",
+            "user_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.stations": {
+      "name": "stations",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(150)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "address": {
+          "name": "address",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "minimum_settlement_amount": {
+          "name": "minimum_settlement_amount",
+          "type": "numeric(18, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "station_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'ACTIVE'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "stations_minimum_settlement_amount_positive": {
+          "name": "stations_minimum_settlement_amount_positive",
+          "value": "\"stations\".\"minimum_settlement_amount\" > 0"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.users": {
+      "name": "users",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "full_name": {
+          "name": "full_name",
+          "type": "varchar(150)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "phone": {
+          "name": "phone",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "password_hash": {
+          "name": "password_hash",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "system_role": {
+          "name": "system_role",
+          "type": "system_role",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'USER'"
+        },
+        "status": {
+          "name": "status",
+          "type": "user_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'ACTIVE'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "users_phone_unique": {
+          "name": "users_phone_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "phone"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {
+    "public.execution_status": {
+      "name": "execution_status",
+      "schema": "public",
+      "values": [
+        "NOT_REQUIRED",
+        "NOT_STARTED",
+        "IN_PROGRESS",
+        "SUCCEEDED",
+        "FAILED",
+        "UNKNOWN"
+      ]
+    },
+    "public.financial_account_type": {
+      "name": "financial_account_type",
+      "schema": "public",
+      "values": [
+        "PLATFORM_CASH",
+        "USER_AVAILABLE",
+        "USER_ALLOCATED",
+        "STATION_PAYABLE"
+      ]
+    },
+    "public.financial_entry_type": {
+      "name": "financial_entry_type",
+      "schema": "public",
+      "values": [
+        "DEBIT",
+        "CREDIT"
+      ]
+    },
+    "public.financial_transaction_status": {
+      "name": "financial_transaction_status",
+      "schema": "public",
+      "values": [
+        "PENDING",
+        "PROCESSING",
+        "COMPLETED",
+        "REJECTED",
+        "FAILED",
+        "CANCELLED"
+      ]
+    },
+    "public.financial_transaction_type": {
+      "name": "financial_transaction_type",
+      "schema": "public",
+      "values": [
+        "TOP_UP",
+        "WITHDRAWAL",
+        "ALLOCATION",
+        "DEALLOCATION",
+        "TRANSFER",
+        "FUEL_PURCHASE",
+        "SETTLEMENT",
+        "REVERSAL"
+      ]
+    },
+    "public.station_member_role": {
+      "name": "station_member_role",
+      "schema": "public",
+      "values": [
+        "OWNER",
+        "ATTENDANT"
+      ]
+    },
+    "public.station_member_status": {
+      "name": "station_member_status",
+      "schema": "public",
+      "values": [
+        "ACTIVE",
+        "INACTIVE"
+      ]
+    },
+    "public.station_status": {
+      "name": "station_status",
+      "schema": "public",
+      "values": [
+        "ACTIVE",
+        "INACTIVE"
+      ]
+    },
+    "public.system_role": {
+      "name": "system_role",
+      "schema": "public",
+      "values": [
+        "USER",
+        "ADMIN"
+      ]
+    },
+    "public.user_status": {
+      "name": "user_status",
+      "schema": "public",
+      "values": [
+        "ACTIVE",
+        "INACTIVE",
+        "BLOCKED"
+      ]
+    }
+  },
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

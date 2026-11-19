@@ -1,0 +1,2 @@
+ALTER TABLE "financial_transactions" ADD COLUMN "incoming_bank_reference" varchar(150);--> statement-breakpoint
+CREATE INDEX "financial_transactions_incoming_bank_reference_idx" ON "financial_transactions" USING btree ("incoming_bank_reference");
