@@ -134,6 +134,24 @@ api.interceptors.response.use(
       RATE_LIMIT_EXCEEDED: "تم تجاوز عدد الطلبات المسموح بها، يرجى الانتظار قليلاً.",
     };
 
+    if (
+      status === 403 &&
+      !error.config?._csrfRetry &&
+      typeof serverMsg === "string" &&
+      serverMsg.toLowerCase().includes("csrf")
+    ) {
+      error.config._csrfRetry = true;
+      try {
+        const freshToken = await fetchCsrfToken(true);
+        if (freshToken) {
+          error.config.headers["X-CSRF-Token"] = freshToken;
+          return api(error.config);
+        }
+      } catch {
+        // Fallback to standard error response below
+      }
+    }
+
     if (status === 403 && typeof serverMsg === "string" && serverMsg.toLowerCase().includes("csrf")) {
       // CSRF token mismatch: refresh token for subsequent user action
       clearCsrfToken();

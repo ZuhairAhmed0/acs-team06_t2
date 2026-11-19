@@ -48,7 +48,15 @@ export const csrfProtection: RequestHandler = (req, _res, next) => {
 
   // 1. Browser Origin Validation
   const origin = req.headers.origin;
-  if (origin && env.CORS_ORIGIN && origin !== env.CORS_ORIGIN) {
+  const host = req.headers.host;
+  const isSameOrigin =
+    origin &&
+    host &&
+    (origin === `https://${host}` ||
+      origin === `http://${host}` ||
+      origin.replace(/^https?:\/\//, "") === host);
+
+  if (origin && !isSameOrigin && env.CORS_ORIGIN && origin !== env.CORS_ORIGIN) {
     next(new ForbiddenError("Cross-origin request not permitted."));
     return;
   }

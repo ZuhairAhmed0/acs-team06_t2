@@ -47,6 +47,7 @@ export function createSessionMiddleware(options: SessionMiddlewareOptions = {}) 
     saveUninitialized: false,
     rolling: false,
     store,
+    proxy: true,
     cookie: {
       httpOnly: true,
       secure: env.NODE_ENV === "production",

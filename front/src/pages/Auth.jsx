@@ -10,7 +10,7 @@ import { errorMessage } from "../lib/api";
 import { roleOf } from "../lib/format";
 
 const loginSchema = z.object({ phone: z.string().min(7, "أدخل رقم هاتف صحيحاً"), password: z.string().min(8, "كلمة المرور 8 أحرف على الأقل") });
-const registerSchema = z.object({ full_name: z.string().min(3, "أدخل الاسم كاملاً"), phone: z.string().min(7, "أدخل رقم هاتف صحيحاً"), password: z.string().min(8, "كلمة المرور 8 أحرف على الأقل"), password_confirmation: z.string().min(8, "أعد كتابة كلمة المرور") }).refine(v => v.password === v.password_confirmation, { path: ["password_confirmation"], message: "كلمتا المرور غير متطابقتين" });
+const registerSchema = z.object({ full_name: z.string().min(3, "أدخل الاسم كاملاً"), phone: z.string().min(7, "أدخل رقم هاتف صحيحاً"), password: z.string().min(12, "كلمة المرور 12 حرفاً على الأقل"), password_confirmation: z.string().min(12, "أعد كتابة كلمة المرور") }).refine(v => v.password === v.password_confirmation, { path: ["password_confirmation"], message: "كلمتا المرور غير متطابقتين" });
 
 export function Login() {
   const { login } = useAuth(), nav = useNavigate(), [busy, setBusy] = useState(false);

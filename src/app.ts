@@ -53,6 +53,9 @@ const requestLogger = morgan(
 export function createApp(dependencies: AppDependencies = {}): Express {
   const app = express();
 
+  // Trust first proxy (Render, Cloudflare, etc.) to allow secure cookies over HTTPS
+  app.set("trust proxy", 1);
+
   app.disable("x-powered-by");
 
   // 1. Correlation tracking: attaches X-Request-ID before any other middleware

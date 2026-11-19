@@ -64,7 +64,7 @@ export function AuthProvider({ children }) {
         setUser(currentUser);
         return currentUser;
       },
-      async register(details) {
+            async register(details) {
         const payload = {
           fullName: details.full_name || details.fullName,
           full_name: details.full_name || details.fullName,
